@@ -13,19 +13,46 @@ import streamlit as st  # noqa: E402
 
 from app.components.chat_ui import render_chat  # noqa: E402
 from app.components.upload import render_sidebar  # noqa: E402
+from src.config import settings  # noqa: E402
 from src.pipeline import RAGPipeline  # noqa: E402
 
-st.set_page_config(page_title="Contract Analyzer", page_icon="📄", layout="wide")
+st.set_page_config(
+    page_title="Contract Analyzer",
+    page_icon="📄",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+
+def load_css() -> None:
+    css = (ROOT / "app" / "assets" / "style.css").read_text(encoding="utf-8")
+    st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
 
 
 @st.cache_resource(show_spinner="Loading models (first run takes a while)...")
 def get_pipeline() -> RAGPipeline:
-    return RAGPipeline()
+    pipeline = RAGPipeline()
+    if pipeline.store.count() == 0:       # e.g. fresh Hugging Face Space
+        for f in sorted(settings.raw_dir.iterdir()):
+            if f.suffix.lower() in {".pdf", ".docx", ".txt"}:
+                pipeline.ingest_file(f)
+    return pipeline
+
+
+def render_hero() -> None:
+    st.markdown(
+        '<div class="hero">'
+        '<span class="hero-badge">HYBRID SEARCH · RERANKING · CITATIONS</span>'
+        "<h1>📄 Contract Analyzer</h1>"
+        "<p>Ask questions in plain English. Every answer points to the exact file, page and clause.</p>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
 
 
 def main() -> None:
-    st.title("📄 Contract Analyzer")
-    st.caption("Ask questions about your contracts. Every answer cites its source clause.")
+    load_css()
+    render_hero()
     pipeline = get_pipeline()
     options = render_sidebar(pipeline)
     render_chat(pipeline, options)

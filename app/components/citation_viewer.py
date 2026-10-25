@@ -1,6 +1,8 @@
 # app/components/citation_viewer.py
 """Show citations, warnings and stats under an answer."""
 
+import html
+
 import streamlit as st
 
 from src.pipeline import RAGAnswer
@@ -8,18 +10,25 @@ from src.pipeline import RAGAnswer
 
 def render_answer_details(result: RAGAnswer) -> None:
     for w in result.warnings:
-        st.warning(w)
+        st.warning(w, icon="⚠️")
 
     if result.citations:
-        st.markdown("**Sources**")
+        st.markdown('<div class="sources-title">📎 Sources</div>', unsafe_allow_html=True)
         for c in result.citations:
-            with st.expander(f"[{c.number}] {c.label}"):
-                st.write(c.full_text)
-                st.caption(f"Relevance score: {c.score:.2f}")
+            with st.expander(f"[{c.number}]  {c.label}"):
+                body = html.escape(c.full_text).replace("\n", "<br>")
+                st.markdown(f'<div class="quote">{body}</div>', unsafe_allow_html=True)
+                if result.reranked:
+                    st.caption(f"Relevance: {c.score * 100:.0f}%")
 
     if not result.refused:
-        st.caption(
-            f"{result.total_s:.1f}s total | retrieval {result.retrieval_s:.1f}s | "
-            f"LLM {result.llm_s:.1f}s | {result.input_tokens} in / {result.output_tokens} out tokens | "
-            f"mode: {result.mode}{' + rerank' if result.reranked else ''}"
-        )
+        chips = [
+            f'<span class="chip">⏱ {result.total_s:.1f}s</span>',
+            f'<span class="chip">🔍 {result.mode}</span>',
+            f'<span class="chip">🔤 {result.input_tokens + result.output_tokens} tokens</span>',
+        ]
+        if result.reranked:
+            chips.append('<span class="chip green">✓ reranked</span>')
+        if result.citations:
+            chips.append(f'<span class="chip green">{len(result.citations)} source(s)</span>')
+        st.markdown(f'<div class="chip-row">{"".join(chips)}</div>', unsafe_allow_html=True)
