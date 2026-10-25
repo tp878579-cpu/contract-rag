@@ -44,9 +44,9 @@ class LLMClient:
         if not self.model or self.model.startswith("your-"):
             raise ValueError("LLM_MODEL is missing. Add a model name to the .env file.")
 
-    @property
-    def client(self):
-        """Create the provider client on first use."""
+        @property
+        def client(self):
+          """Create the provider client on first use."""
         if self._client is None:
             if self.provider == "anthropic":
                 import anthropic
@@ -56,6 +56,8 @@ class LLMClient:
                 self._client = openai.OpenAI(
                     api_key=settings.llm_api_key or "not-needed",
                     base_url=_OPENAI_COMPATIBLE[self.provider],
+                    timeout=40.0,
+                    max_retries=1,
                 )
         return self._client
 
