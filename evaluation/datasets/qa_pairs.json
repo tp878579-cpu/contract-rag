@@ -1,0 +1,31 @@
+[
+  {
+    "question": "How can I end the contract?",
+    "source": "sample.pdf",
+    "evidence": ["Either party may terminate with 30 days written notice"],
+    "answer_keywords": ["30 days"],
+    "answerable": true
+  },
+  {
+    "question": "When do I have to pay an invoice?",
+    "source": "sample.pdf",
+    "evidence": ["Fees are due within 30 days of invoice"],
+    "answer_keywords": ["30 days"],
+    "answerable": true
+  },
+  {
+    "question": "How long does the agreement last?",
+    "source": "sample.pdf",
+    "evidence": ["This agreement lasts 12 months"],
+    "answer_keywords": ["12 months"],
+    "answerable": true
+  },
+  {
+    "question": "What is the capital of France?",
+    "answerable": false
+  },
+  {
+    "question": "What is the limit of liability?",
+    "answerable": false
+  }
+]

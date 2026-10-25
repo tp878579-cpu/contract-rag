@@ -1,0 +1,32 @@
+{
+  "retrieval": [
+    {
+      "config": "Vector only",
+      "n": 3,
+      "latency_ms": 1311.6063666675473,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "mrr@5": 1.0
+    },
+    {
+      "config": "BM25 only",
+      "n": 3,
+      "latency_ms": 0.17469999875174835,
+      "recall@1": 0.6666666666666666,
+      "recall@3": 0.6666666666666666,
+      "recall@5": 0.6666666666666666,
+      "mrr@5": 0.6666666666666666
+    },
+    {
+      "config": "Hybrid (RRF)",
+      "n": 3,
+      "latency_ms": 59.327666667134814,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "recall@5": 1.0,
+      "mrr@5": 1.0
+    }
+  ],
+  "generation": null
+}
