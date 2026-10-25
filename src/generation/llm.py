@@ -56,8 +56,8 @@ class LLMClient:
                 self._client = openai.OpenAI(
                     api_key=settings.llm_api_key or "not-needed",
                     base_url=_OPENAI_COMPATIBLE[self.provider],
-                    timeout=40.0,
-                    max_retries=1,
+                    timeout=60.0,
+                    max_retries=4,
                 )
         return self._client
 

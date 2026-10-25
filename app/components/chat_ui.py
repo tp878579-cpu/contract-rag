@@ -74,7 +74,11 @@ def render_chat(pipeline: RAGPipeline, options: dict) -> None:
             try:
                 result = pipeline.ask(question, **options)
             except Exception as e:
-                st.error(f"Something went wrong: {e}")
+                msg = str(e)
+                if "503" in msg or "429" in msg:
+                    st.warning("The AI model is busy right now. Please wait a minute and ask again.", icon="⏳")
+                else:
+                    st.error(f"Something went wrong: {msg}")
                 return
 
         _show_answer(result)
